@@ -39,29 +39,18 @@ public class EditService {
                           String text, Float fontSize, String color, String imageDataUrl,
                           String originalText, Boolean bold, Boolean italic, String family) {}
 
-    private final com.pdfsuite.files.WordExtractor wordExtractor;
-
-    public EditService(com.pdfsuite.files.WordExtractor wordExtractor) {
-        this.wordExtractor = wordExtractor;
-    }
-
     public byte[] applyElements(byte[] input, List<Element> elements) {
         if (elements == null || elements.isEmpty()) throw ApiException.badRequest("Nothing to apply");
         try (PDDocument doc = PdfToolService.load(input)) {
-            // First pass: truly remove replaced words from the text layer where it's safe —
-            // only when the word appears exactly once on its page, so we can't hit the wrong one.
+            // First pass: remove the replaced glyphs from the text layer. Removal is targeted
+            // by position (the element's box), so duplicate words and partial lines are safe.
             boolean[] trulyRemoved = new boolean[elements.size()];
-            Map<Integer, List<com.pdfsuite.files.WordExtractor.Word>> pageWords = new LinkedHashMap<>();
             for (int i = 0; i < elements.size(); i++) {
                 Element el = elements.get(i);
-                if (!"replace-text".equals(el.type()) || el.originalText() == null || el.originalText().isBlank()
+                if (!"replace-text".equals(el.type())
                         || el.page() < 1 || el.page() > doc.getNumberOfPages()) continue;
-                List<com.pdfsuite.files.WordExtractor.Word> words =
-                        pageWords.computeIfAbsent(el.page(), p -> wordExtractor.words(input, p));
-                long occurrences = words.stream().filter(w -> w.text().equals(el.originalText())).count();
-                if (occurrences == 1) {
-                    trulyRemoved[i] = TextRemover.removeWord(doc, doc.getPage(el.page() - 1), el.originalText());
-                }
+                trulyRemoved[i] = TextRegionRemover.removeRegion(
+                        doc, doc.getPage(el.page() - 1), el.x(), el.y(), el.w(), el.h());
             }
 
             for (int i = 0; i < elements.size(); i++) {

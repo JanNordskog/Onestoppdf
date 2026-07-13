@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import FileDrop from '../components/FileDrop'
 import PdfThumb from '../components/PdfThumb'
 import SignaturePad from '../components/SignaturePad'
@@ -16,6 +16,31 @@ const CSS_FAMILY: Record<string, string> = {
 }
 const cssFamily = (f?: string) => CSS_FAMILY[f ?? 'sans'] ?? CSS_FAMILY.sans
 
+type Line = { words: PageWord[]; x: number; y: number; w: number; h: number; text: string }
+
+/** Groups a page's words into visual lines by baseline proximity. */
+function groupLines(ws: PageWord[]): Line[] {
+  const clusters: PageWord[][] = []
+  for (const w of [...ws].sort((a, b) => (a.y + a.h) - (b.y + b.h))) {
+    const cluster = clusters.find((c) => {
+      const ref = c[0]
+      return Math.abs((ref.y + ref.h) - (w.y + w.h)) < Math.max(ref.h, w.h) * 0.5
+    })
+    if (cluster) cluster.push(w)
+    else clusters.push([w])
+  }
+  return clusters
+    .map((c) => {
+      c.sort((a, b) => a.x - b.x)
+      const x = Math.min(...c.map((w) => w.x))
+      const y = Math.min(...c.map((w) => w.y))
+      const x2 = Math.max(...c.map((w) => w.x + w.w))
+      const y2 = Math.max(...c.map((w) => w.y + w.h))
+      return { words: c, x, y, w: x2 - x, h: y2 - y, text: c.map((w) => w.text).join(' ') }
+    })
+    .sort((a, b) => a.y - b.y)
+}
+
 export default function EditorPage() {
   const [doc, setDoc] = useState<DocumentDto | null>(null)
   const [page, setPage] = useState(1)
@@ -26,7 +51,7 @@ export default function EditorPage() {
   const [error, setError] = useState<string | null>(null)
   const [result, setResult] = useState<DocumentDto | null>(null)
   const [words, setWords] = useState<Record<number, PageWord[]>>({})
-  const [editingWord, setEditingWord] = useState<{ word: PageWord; value: string } | null>(null)
+  const [editingLine, setEditingLine] = useState<{ line: Line; value: string } | null>(null)
   const [stageH, setStageH] = useState(0)
   const stageRef = useRef<HTMLDivElement>(null)
   const drag = useRef<{ key: number; mode: 'move' | 'resize'; startX: number; startY: number; orig: El } | null>(null)
@@ -99,28 +124,31 @@ export default function EditorPage() {
     }
   }
 
-  function onDoubleClick(e: React.MouseEvent) {
-    if (!stageRef.current) return
-    const rect = stageRef.current.getBoundingClientRect()
-    const fx = (e.clientX - rect.left) / rect.width
-    const fy = (e.clientY - rect.top) / rect.height
-    const hit = (words[page] ?? []).find((w) =>
-      fx >= w.x - 0.004 && fx <= w.x + w.w + 0.004 &&
-      fy >= w.y - w.h * 0.3 && fy <= w.y + w.h * 1.3)
-    if (hit) {
-      setSelected(null)
-      setEditingWord({ word: hit, value: hit.text })
-    }
-  }
+  const lines = useMemo(() => groupLines(words[page] ?? []), [words, page])
 
-  function commitWordEdit() {
-    if (!editingWord) return
-    const { word, value } = editingWord
-    setEditingWord(null)
-    if (!value.trim() || value === word.text) return
-    add({ type: 'replace-text', x: word.x, y: word.y, w: word.w, h: word.h,
-          text: value, fontSize: word.fontSize, color: word.color || '#111111',
-          originalText: word.text, bold: word.bold, italic: word.italic, family: word.family })
+  function commitLineEdit() {
+    if (!editingLine) return
+    const { line, value } = editingLine
+    setEditingLine(null)
+    const newText = value.replace(/\s+/g, ' ').trim()
+    if (newText === line.text) return
+    const newTokens = newText === '' ? [] : newText.split(' ')
+    if (newTokens.length === line.words.length) {
+      // Same word count: swap only the words that changed, keeping each word's own style.
+      line.words.forEach((w, i) => {
+        if (w.text !== newTokens[i]) {
+          add({ type: 'replace-text', x: w.x, y: w.y, w: w.w, h: w.h, text: newTokens[i],
+                fontSize: w.fontSize, color: w.color || '#111111', originalText: w.text,
+                bold: w.bold, italic: w.italic, family: w.family })
+        }
+      })
+    } else {
+      // Word count changed: replace the whole line, styled like its first word.
+      const f = line.words[0]
+      add({ type: 'replace-text', x: line.x, y: line.y, w: line.w, h: line.h, text: newText,
+            fontSize: f.fontSize, color: f.color || '#111111', originalText: line.text,
+            bold: f.bold, italic: f.italic, family: f.family })
+    }
   }
 
   async function save() {
@@ -161,7 +189,7 @@ export default function EditorPage() {
         <ToolIcon family="edit" slug="edit" />
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Edit PDF</h1>
-          <p className="text-slate-500">Add text, highlights, boxes, images and your signature</p>
+          <p className="text-slate-500">Edit text in place — plus highlights, boxes, images and your signature</p>
         </div>
       </div>
 
@@ -191,8 +219,16 @@ export default function EditorPage() {
 
             <div ref={stageRef} className="relative select-none overflow-hidden rounded-xl border border-slate-300 shadow-sm"
                  onPointerMove={onPointerMove} onPointerUp={() => (drag.current = null)}
-                 onPointerDown={() => setSelected(null)} onDoubleClick={onDoubleClick}>
+                 onPointerDown={() => setSelected(null)}>
               <PdfThumb docId={doc.id} page={page} dpi={110} />
+              {!editingLine && lines.map((ln, i) => (
+                <div key={`ln-${i}`} title="Click to edit this line"
+                     onPointerDown={(e) => e.stopPropagation()}
+                     onClick={(e) => { e.stopPropagation(); setSelected(null); setEditingLine({ line: ln, value: ln.text }) }}
+                     className="absolute cursor-text rounded-sm ring-indigo-300 hover:bg-indigo-100/40 hover:ring-1"
+                     style={{ left: `${(ln.x - 0.003) * 100}%`, top: `${(ln.y - 0.004) * 100}%`,
+                              width: `${(ln.w + 0.006) * 100}%`, height: `${(ln.h + 0.008) * 100}%` }} />
+              ))}
               {pageEls.map((el) => (
                 <div key={el.key}
                      onPointerDown={(e) => onPointerDown(e, el.key, 'move')}
@@ -218,24 +254,25 @@ export default function EditorPage() {
                   )}
                 </div>
               ))}
-              {editingWord && (
-                <input autoFocus value={editingWord.value}
-                       onChange={(e) => setEditingWord({ ...editingWord, value: e.target.value })}
-                       onBlur={commitWordEdit}
+              {editingLine && (
+                <input autoFocus value={editingLine.value}
+                       onChange={(e) => setEditingLine({ ...editingLine, value: e.target.value })}
+                       onBlur={commitLineEdit}
                        onKeyDown={(e) => {
-                         if (e.key === 'Enter') commitWordEdit()
-                         if (e.key === 'Escape') setEditingWord(null)
+                         if (e.key === 'Enter') commitLineEdit()
+                         if (e.key === 'Escape') setEditingLine(null)
                        }}
                        onPointerDown={(e) => e.stopPropagation()}
                        className="absolute z-10 rounded border-2 border-indigo-500 bg-white px-1 leading-none shadow-lg outline-none"
-                       style={{ left: `${editingWord.word.x * 100}%`, top: `${(editingWord.word.y - editingWord.word.h * 0.3) * 100}%`,
-                                width: `${Math.max(editingWord.word.w * 100 + 4, 14)}%`,
-                                fontSize: `${Math.max(editingWord.word.h * stageH * 0.95, 10)}px`,
-                                height: `${editingWord.word.h * stageH * 1.9}px`,
-                                color: editingWord.word.color || '#111111',
-                                fontFamily: cssFamily(editingWord.word.family),
-                                fontWeight: editingWord.word.bold ? 700 : 400,
-                                fontStyle: editingWord.word.italic ? 'italic' : 'normal' }} />
+                       style={{ left: `${(editingLine.line.x - 0.003) * 100}%`,
+                                top: `${(editingLine.line.y - editingLine.line.h * 0.3) * 100}%`,
+                                width: `${Math.min(Math.max((editingLine.line.w + 0.006) * 100 + 3, 16), 98)}%`,
+                                fontSize: `${Math.max(editingLine.line.h * stageH * 0.9, 10)}px`,
+                                height: `${editingLine.line.h * stageH * 1.8}px`,
+                                color: editingLine.line.words[0].color || '#111111',
+                                fontFamily: cssFamily(editingLine.line.words[0].family),
+                                fontWeight: editingLine.line.words[0].bold ? 700 : 400,
+                                fontStyle: editingLine.line.words[0].italic ? 'italic' : 'normal' }} />
               )}
             </div>
           </div>
@@ -268,8 +305,9 @@ export default function EditorPage() {
                 </div>
               ) : (
                 <p className="text-sm text-slate-500">
-                  <span className="font-medium text-slate-700">Double-click any word</span> on the page to
-                  edit its text in place. Or add elements with the toolbar and drag them into position.
+                  <span className="font-medium text-slate-700">Click any line of text</span> to edit it in
+                  place — the original glyphs are removed and your text is redrawn in a matching font.
+                  Or add elements with the toolbar and drag them into position.
                 </p>
               )}
             </div>

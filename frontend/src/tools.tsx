@@ -79,7 +79,7 @@ export const TOOLS: ToolConfig[] = [
     fields: [{ name: 'startAt', label: 'Start counting at', type: 'number', default: '1' }],
     buildBody: (ids, v) => ({ documentId: ids[0], startAt: parseInt(v.startAt || '1', 10) }),
   },
-  { slug: 'edit', title: 'Edit PDF', subtitle: 'Add text, highlights, shapes and images', family: 'edit', custom: true },
+  { slug: 'edit', title: 'Edit PDF', subtitle: 'Edit text in place, like a Word document', family: 'edit', custom: true },
   {
     slug: 'pdf-to-word', title: 'PDF to Word', subtitle: 'Extraction-grade .docx — honest, no cloud', family: 'convert',
     endpoint: '/api/tools/pdf-to-word', cta: 'Convert to Word',
