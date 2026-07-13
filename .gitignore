@@ -1,0 +1,9 @@
+target/
+node_modules/
+dist/
+storage/
+.env
+.idea/
+.vscode/
+*.iml
+.DS_Store
