@@ -28,8 +28,6 @@ export default function Home() {
             <Link to="/merge" className="btn-primary !px-7 !py-3 text-base">Start with a merge</Link>
             <Link to="/sign" className="btn-secondary !px-7 !py-3 text-base">Send for signature</Link>
           </div>
-          <img src="/hero.png" alt="A miniature harbor folded from paper — cut-paper waves, origami boats and a paper lighthouse"
-               className="mx-auto mt-12 w-full max-w-4xl rounded-2xl border border-slate-200 shadow-sm" />
         </div>
       </section>
 
