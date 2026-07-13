@@ -13,9 +13,6 @@ export default function Home() {
     <>
       <section className="border-b border-slate-200 bg-white">
         <div className="mx-auto max-w-6xl px-4 py-20 text-center">
-          <p className="mb-4 inline-block rounded-full bg-indigo-50 px-4 py-1.5 text-sm font-medium text-indigo-700">
-            The one-stop PDF workshop
-          </p>
           <h1 className="mx-auto max-w-3xl text-4xl font-extrabold tracking-tight sm:text-5xl">
             Every PDF tool you need.<br />
             <span className="text-indigo-600">None of the limits you hate.</span>
