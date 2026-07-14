@@ -60,6 +60,24 @@ public class ToolController {
         });
     }
 
+    public record MergePageItem(UUID documentId, int page) {}
+    public record MergePagesRequest(List<MergePageItem> items) {}
+
+    /** Page-level merge: the client sends the exact output sequence of (document, page) pairs. */
+    @PostMapping("/merge-pages")
+    public DocumentDto mergePages(@RequestBody MergePagesRequest req) {
+        if (req.items() == null || req.items().isEmpty())
+            throw com.pdfsuite.common.ApiException.badRequest("Nothing to merge");
+        List<UUID> ids = req.items().stream().map(MergePageItem::documentId).distinct().toList();
+        List<StoredDocument> inputs = requireDocs(ids, 1);
+        List<int[]> seq = req.items().stream()
+                .map(it -> new int[]{ids.indexOf(it.documentId()), it.page()}).toList();
+        return run("merge-pages", inputs, () -> {
+            byte[] out = pdf.mergePages(ids.stream().map(documents::bytes).toList(), seq);
+            return save("merged.pdf", DocumentService.PDF, out);
+        });
+    }
+
     @PostMapping("/split")
     public DocumentDto split(@RequestBody SplitRequest req) {
         StoredDocument in = requireDoc(req.documentId());

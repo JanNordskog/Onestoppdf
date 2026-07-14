@@ -5,6 +5,7 @@ import { AuthProvider, RequireAuth } from './lib/auth'
 import Home from './pages/Home'
 import { LoginPage, RegisterPage } from './pages/AuthPages'
 import MyFiles from './pages/MyFiles'
+import MergePage from './pages/MergePage'
 import OrganizePage from './pages/OrganizePage'
 import EditorPage from './pages/EditorPage'
 import SignDashboard from './pages/sign/SignDashboard'
@@ -23,6 +24,7 @@ export default function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/files" element={<RequireAuth><MyFiles /></RequireAuth>} />
+            <Route path="/merge" element={<MergePage />} />
             <Route path="/organize" element={<OrganizePage />} />
             <Route path="/edit" element={<EditorPage />} />
             <Route path="/sign" element={<RequireAuth><SignDashboard /></RequireAuth>} />

@@ -37,9 +37,8 @@ const pagesOpt = (v: string) =>
 
 export const TOOLS: ToolConfig[] = [
   {
-    slug: 'merge', title: 'Merge PDF', subtitle: 'Combine PDFs in the order you choose', family: 'pages',
-    multiple: true, minFiles: 2, endpoint: '/api/tools/merge', cta: 'Merge PDFs',
-    buildBody: (ids) => ({ documentIds: ids }),
+    slug: 'merge', title: 'Merge PDF', subtitle: 'Arrange every page across files, then merge', family: 'pages',
+    custom: true,
   },
   {
     slug: 'split', title: 'Split PDF', subtitle: 'Extract pages or burst into single pages', family: 'pages',

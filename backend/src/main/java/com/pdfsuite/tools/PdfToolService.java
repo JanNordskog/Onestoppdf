@@ -56,6 +56,34 @@ public class PdfToolService {
         }
     }
 
+    /**
+     * Merge an explicit page sequence drawn from several source PDFs — the caller decides
+     * exactly which pages appear and in what order (interleaving across files is fine).
+     * Each seq entry is {sourceIndex, 1-based page}.
+     */
+    public byte[] mergePages(List<byte[]> inputs, List<int[]> seq) {
+        if (seq == null || seq.isEmpty()) throw ApiException.badRequest("Page sequence is empty");
+        List<PDDocument> srcs = new ArrayList<>();
+        try (PDDocument dst = new PDDocument()) {
+            try {
+                for (byte[] input : inputs) srcs.add(load(input));
+                for (int[] ref : seq) {
+                    if (ref[0] < 0 || ref[0] >= srcs.size())
+                        throw ApiException.badRequest("Bad source document index");
+                    PDDocument src = srcs.get(ref[0]);
+                    if (ref[1] < 1 || ref[1] > src.getNumberOfPages())
+                        throw ApiException.badRequest("Page " + ref[1] + " is out of range");
+                    dst.importPage(src.getPage(ref[1] - 1));
+                }
+                return toBytes(dst);
+            } finally {
+                for (PDDocument src : srcs) src.close();
+            }
+        } catch (IOException e) {
+            throw new UncheckedIOException("Merge failed", e);
+        }
+    }
+
     /** ranges e.g. "1-3,5"; extracts those pages into one PDF. */
     public byte[] extractPages(byte[] input, String ranges) {
         try (PDDocument src = load(input); PDDocument dst = new PDDocument()) {
