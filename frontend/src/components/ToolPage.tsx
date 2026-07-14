@@ -76,7 +76,21 @@ export default function ToolPage({ config }: { config: ToolConfig }) {
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
           </div>
           <h2 className="text-xl font-semibold">Done!</h2>
-          <p className="mt-1 mb-6 text-slate-500">{result.name} · {formatBytes(result.sizeBytes)}</p>
+          <p className="mt-1 text-slate-500">{result.name} · {formatBytes(result.sizeBytes)}</p>
+          {config.slug === 'compress' && docs[0] && (
+            result.sizeBytes < docs[0].sizeBytes * 0.98 ? (
+              <p className="mt-1 text-sm font-medium text-emerald-600">
+                {Math.round(100 - (100 * result.sizeBytes) / docs[0].sizeBytes)}% smaller
+                (was {formatBytes(docs[0].sizeBytes)})
+              </p>
+            ) : (
+              <p className="mt-1 text-sm text-slate-500">
+                This PDF is already optimized — squeezing it further would visibly hurt quality,
+                so we kept it intact.
+              </p>
+            )
+          )}
+          <div className="mb-6" />
           <div className="flex justify-center gap-3">
             <a href={downloadUrl(result.id)} className="btn-primary">Download</a>
             <button onClick={reset} className="btn-secondary">Process another</button>

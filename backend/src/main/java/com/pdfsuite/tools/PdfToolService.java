@@ -150,27 +150,70 @@ public class PdfToolService {
         float quality = switch (level == null ? "medium" : level) {
             case "low" -> 0.75f; case "high" -> 0.3f; default -> 0.5f;
         };
+        int maxSide = "high".equals(level) ? 1200 : 1600;
         try (PDDocument doc = load(input)) {
             for (PDPage page : doc.getPages()) {
-                var res = page.getResources();
-                if (res == null) continue;
-                for (var name : res.getXObjectNames()) {
-                    try {
-                        if (res.getXObject(name) instanceof PDImageXObject img) {
-                            BufferedImage bi = img.getImage();
-                            if (bi == null) continue;
-                            BufferedImage rgb = toRgb(downscale(bi, 1600));
-                            res.put(name, JPEGFactory.createFromImage(doc, rgb, quality));
-                        }
-                    } catch (Exception e) {
-                        // leave this image as-is; compression is best-effort per image
-                    }
-                }
+                compressImages(doc, page.getResources(), quality, maxSide, new java.util.HashSet<>());
             }
-            return toBytes(doc);
+            byte[] out = toBytes(doc);
+            // Never hand back a bigger file than the user gave us.
+            return out.length < input.length ? out : input;
         } catch (IOException e) {
             throw new UncheckedIOException("Compress failed", e);
         }
+    }
+
+    /**
+     * Re-encodes raster images as smaller JPEGs, recursing into nested form XObjects.
+     * Skips what JPEG re-encoding would hurt: images with transparency (SMask/Mask/stencil),
+     * 1-bit scans (CCITT/JBIG2 are already tiny — JPEG would inflate them) and small images.
+     * The original is kept whenever it is already smaller than the re-encoded version.
+     */
+    private static void compressImages(PDDocument doc, org.apache.pdfbox.pdmodel.PDResources res,
+                                       float quality, int maxSide,
+                                       java.util.Set<org.apache.pdfbox.cos.COSBase> visited) {
+        if (res == null) return;
+        for (org.apache.pdfbox.cos.COSName name : res.getXObjectNames()) {
+            try {
+                org.apache.pdfbox.pdmodel.graphics.PDXObject xo = res.getXObject(name);
+                if (xo instanceof org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject form) {
+                    if (visited.add(form.getCOSObject())) {
+                        compressImages(doc, form.getResources(), quality, maxSide, visited);
+                    }
+                } else if (xo instanceof PDImageXObject img) {
+                    org.apache.pdfbox.cos.COSDictionary dict = img.getCOSObject();
+                    if (dict.containsKey(org.apache.pdfbox.cos.COSName.SMASK)
+                            || dict.containsKey(org.apache.pdfbox.cos.COSName.MASK)
+                            || img.isStencil() || img.getBitsPerComponent() <= 1) continue;
+                    int oldLen = dict.getInt(org.apache.pdfbox.cos.COSName.LENGTH, Integer.MAX_VALUE);
+                    if (oldLen < 30_000 || Math.max(img.getWidth(), img.getHeight()) < 500) continue;
+                    BufferedImage bi = img.getImage();
+                    if (bi == null) continue;
+                    byte[] jpeg = encodeJpeg(toRgb(downscale(bi, maxSide)), quality);
+                    if (jpeg.length < oldLen) {
+                        res.put(name, JPEGFactory.createFromStream(doc, new java.io.ByteArrayInputStream(jpeg)));
+                    }
+                }
+            } catch (Exception e) {
+                // best-effort per image
+            }
+        }
+    }
+
+    private static byte[] encodeJpeg(BufferedImage img, float quality) throws IOException {
+        javax.imageio.ImageWriter writer = ImageIO.getImageWritersByFormatName("jpeg").next();
+        javax.imageio.ImageWriteParam param = writer.getDefaultWriteParam();
+        param.setCompressionMode(javax.imageio.ImageWriteParam.MODE_EXPLICIT);
+        param.setCompressionQuality(quality);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        try (javax.imageio.stream.MemoryCacheImageOutputStream mem =
+                     new javax.imageio.stream.MemoryCacheImageOutputStream(out)) {
+            writer.setOutput(mem);
+            writer.write(null, new javax.imageio.IIOImage(img, null, null), param);
+        } finally {
+            writer.dispose();
+        }
+        return out.toByteArray();
     }
 
     public byte[] watermark(byte[] input, String text, float fontSize, float opacity) {
