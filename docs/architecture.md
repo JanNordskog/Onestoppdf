@@ -9,6 +9,7 @@ compile and integrate without rework.
 | Piece      | Tech                                            | Port |
 |------------|--------------------------------------------------|------|
 | Database   | PostgreSQL 16 (docker compose, service `postgres`) | host 5434 |
+| Converter  | pdf2docx sidecar (docker compose, service `converter`, FastAPI) — high-fidelity PDF→DOCX; localhost-only | host 8090 |
 | Backend    | Java 21, Spring Boot 3.4.1, Maven, package `com.pdfsuite` | 8081 |
 | Frontend   | React 18 + TypeScript + Vite + Tailwind CSS v4   | 5174 |
 
@@ -149,7 +150,7 @@ also inserts a ToolJob. Common field: `documentId` / `documentIds` (UUIDs of upl
 | `/api/tools/page-numbers` | `{documentId, startAt:1}` | "n / total" bottom-center footer |
 | `/api/tools/protect` | `{documentId, password}` | StandardProtectionPolicy AES-256 |
 | `/api/tools/unlock` | `{documentId, password}` | open with password, save decrypted (`setAllSecurityToBeRemoved(true)`) |
-| `/api/tools/pdf-to-word` | `{documentId}` | PDFTextStripper per page → XWPFDocument paragraphs, page breaks between pages → `.docx` |
+| `/api/tools/pdf-to-word` | `{documentId, mode:"layout"\|"basic"}` | `layout` (default) → local pdf2docx sidecar for editable, layout-accurate `.docx` (real paragraphs/tables/images, preserved fonts+colors); `basic` → POI text extraction. Layout falls back to basic if the sidecar is unreachable. See `docs/pdf-to-word-fidelity-plan.md`. |
 | `/api/tools/pdf-to-text` | `{documentId}` | → `.txt` |
 | `/api/tools/pdf-to-images` | `{documentId, dpi:150}` | ZIP of `page-1.png..n` |
 | `/api/tools/images-to-pdf` | `{documentIds:[..]}` | each JPG/PNG scaled onto its own A4-or-image-sized page |

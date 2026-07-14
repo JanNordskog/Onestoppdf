@@ -16,5 +16,14 @@ services:
       timeout: 3s
       retries: 10
 
+  # High-fidelity PDF -> DOCX (pdf2docx). Bound to localhost only; the backend (on the host)
+  # reaches it at http://localhost:8090. Never publish this port publicly.
+  converter:
+    build: ./converter
+    container_name: pdfsuite-converter
+    ports:
+      - "127.0.0.1:8090:8090"
+    restart: unless-stopped
+
 volumes:
   pdfsuite-pgdata:

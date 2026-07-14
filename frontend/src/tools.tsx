@@ -78,9 +78,13 @@ export const TOOLS: ToolConfig[] = [
   },
   { slug: 'edit', title: 'Edit PDF', subtitle: 'Edit text in place, like a Word document', family: 'edit', custom: true },
   {
-    slug: 'pdf-to-word', title: 'PDF to Word', subtitle: 'Extraction-grade .docx — honest, no cloud', family: 'convert',
+    slug: 'pdf-to-word', title: 'PDF to Word', subtitle: 'Editable .docx that keeps your layout — 100% local', family: 'convert',
     endpoint: '/api/tools/pdf-to-word', cta: 'Convert to Word',
-    buildBody: (ids) => ({ documentId: ids[0] }),
+    fields: [{ name: 'mode', label: 'Conversion quality', type: 'select', default: 'layout', options: [
+      { value: 'layout', label: 'Layout-accurate (recommended)' },
+      { value: 'basic', label: 'Basic text (fast, offline)' },
+    ], help: 'Layout-accurate rebuilds real paragraphs, tables and images. Complex multi-column pages may still need light cleanup. Basic is plain text flow.' }],
+    buildBody: (ids, v) => ({ documentId: ids[0], mode: v.mode || 'layout' }),
   },
   {
     slug: 'pdf-to-text', title: 'PDF to text', subtitle: 'Pull the plain text out of any PDF', family: 'convert',

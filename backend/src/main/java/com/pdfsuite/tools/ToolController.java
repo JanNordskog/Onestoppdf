@@ -33,6 +33,7 @@ public class ToolController {
     public record ImagesRequest(UUID documentId, Float dpi) {}
     public record EditRequest(UUID documentId, List<EditService.Element> elements) {}
     public record FormDataRequest(UUID documentId, String format) {}
+    public record WordRequest(UUID documentId, String mode) {}
 
     private static final String DOCX = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
 
@@ -145,9 +146,16 @@ public class ToolController {
     }
 
     @PostMapping("/pdf-to-word")
-    public DocumentDto pdfToWord(@RequestBody IdRequest req) {
+    public DocumentDto pdfToWord(@RequestBody WordRequest req) {
         StoredDocument in = requireDoc(req.documentId());
-        return run("pdf-to-word", List.of(in), () -> save(base(in) + ".docx", DOCX, convert.pdfToWord(bytes(in))));
+        boolean basic = "basic".equalsIgnoreCase(req.mode());
+        return run("pdf-to-word", List.of(in), () -> {
+            if (basic) {
+                return save(base(in) + ".docx", DOCX, convert.pdfToWord(bytes(in)));
+            }
+            ConvertService.WordResult result = convert.pdfToWordLayout(bytes(in));
+            return save(base(in) + ".docx", DOCX, result.bytes());
+        });
     }
 
     @PostMapping("/pdf-to-text")
