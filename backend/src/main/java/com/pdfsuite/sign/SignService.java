@@ -201,7 +201,7 @@ public class SignService {
                     if (req.signatureDataUrl() == null || req.signatureDataUrl().isBlank())
                         throw ApiException.badRequest("Draw your signature first");
                     elements.add(new EditService.Element(f.getPage(), "image", f.getX(), f.getY(), f.getW(), f.getH(),
-                            null, null, null, req.signatureDataUrl(), null, null, null, null));
+                            null, null, null, req.signatureDataUrl(), null, null, null, null, null));
                     f.setValue("signature-image");
                 }
                 case "NAME" -> {
@@ -255,7 +255,7 @@ public class SignService {
 
     private EditService.Element textElement(SignatureField f, String text) {
         return new EditService.Element(f.getPage(), "text", f.getX(), f.getY(), f.getW(), f.getH(),
-                text, 12f, "#111111", null, null, null, null, null);
+                text, 12f, "#111111", null, null, null, null, null, null);
     }
 
     private UUID currentDocId(SignatureRequest r) {

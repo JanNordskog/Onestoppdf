@@ -164,13 +164,16 @@ with origin TOP-LEFT of the page, text?, fontSize?:float(pt), color?:"#rrggbb",
 imageDataUrl?:"data:image/png;base64,..."}`.
 Backend converts to PDF space: `pdfX = x*pageW`, `pdfY = pageH - (y+h)*pageH`, `pdfW = w*pageW`,
 `pdfH = h*pageH`. Text uses Helvetica; highlight = fill rect with alpha 0.35; rect = stroke only.
-Extra type `"replace-text"` (double-click word editing): carries `originalText` plus the original
-word's `bold`/`italic`/`family` styling. The backend first tries to delete the original word's
-glyphs from the content stream (see TextRemover — only when the word is unique on the page and in a
-simple font), otherwise covers the box with a padded white fill; then draws `text` on the original
-baseline. Font matching: it reuses the document's own embedded font when that font can encode the
-new characters (pixel-identical), else falls back to the closest Standard-14 face (Times/Helvetica/
-Courier × regular/bold/italic) matching `family` + weight + slant, auto-shrinking to fit the box.
+Extra type `"replace-text"` (in-place text editing): carries `originalText`, the original word's
+`bold`/`italic`/`family`/`originalFontName`. The backend deletes the original glyphs by page region
+(`TextRegionRemover`, position-based so duplicates/partial lines are safe), else covers the box with
+a padded white fill; then draws `text` on the original baseline in the matched color, auto-shrinking
+to fit the box. **Font-resolution pipeline** (`FontService`) — the max-fidelity core: (1) reuse the
+document's own font iff it is genuinely embedded and can encode the new text (pixel-identical);
+(2) else embed a bundled face matching the original typeface by name/family/weight/slant as a subset
+`PDType0Font` with ToUnicode (Carlito≈Calibri, Caladea≈Cambria, Liberation Sans/Serif/Mono≈Arial/
+Times/Courier) — visually identical and searchable; (3) else Standard-14. Fonts live in
+`backend/src/main/resources/fonts/` (OFL/GPL). See `docs/text-editing-plan.md`.
 
 ### E-sign (B3 — `sign/` package: entities SignatureRequest, Signer, SignatureField, AuditEvent + repos + SignService + SignController + PublicSignController)
 

@@ -3,6 +3,7 @@ import { api, apiUpload, downloadUrl, formatBytes } from '../lib/api'
 import type { DocumentDto } from '../lib/types'
 import { ToolIcon, type ToolConfig } from '../tools'
 import FileDropLazy from './FileDrop'
+import ToolSeoBlock from './ToolSeoBlock'
 
 export default function ToolPage({ config }: { config: ToolConfig }) {
   const [docs, setDocs] = useState<DocumentDto[]>([])
@@ -157,6 +158,7 @@ export default function ToolPage({ config }: { config: ToolConfig }) {
           )}
         </div>
       )}
+      <ToolSeoBlock slug={config.slug} toolTitle={config.title} />
     </div>
   )
 }

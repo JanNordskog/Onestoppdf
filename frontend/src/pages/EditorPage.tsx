@@ -5,6 +5,7 @@ import SignaturePad from '../components/SignaturePad'
 import { api, apiUpload, downloadUrl, formatBytes } from '../lib/api'
 import type { DocumentDto, EditElement, PageWord } from '../lib/types'
 import { ToolIcon } from '../tools'
+import ToolSeoBlock from '../components/ToolSeoBlock'
 
 type El = EditElement & { key: number }
 let keySeq = 1
@@ -139,7 +140,7 @@ export default function EditorPage() {
         if (w.text !== newTokens[i]) {
           add({ type: 'replace-text', x: w.x, y: w.y, w: w.w, h: w.h, text: newTokens[i],
                 fontSize: w.fontSize, color: w.color || '#111111', originalText: w.text,
-                bold: w.bold, italic: w.italic, family: w.family })
+                bold: w.bold, italic: w.italic, family: w.family, originalFontName: w.fontName })
         }
       })
     } else {
@@ -147,7 +148,7 @@ export default function EditorPage() {
       const f = line.words[0]
       add({ type: 'replace-text', x: line.x, y: line.y, w: line.w, h: line.h, text: newText,
             fontSize: f.fontSize, color: f.color || '#111111', originalText: line.text,
-            bold: f.bold, italic: f.italic, family: f.family })
+            bold: f.bold, italic: f.italic, family: f.family, originalFontName: f.fontName })
     }
   }
 
@@ -327,6 +328,7 @@ export default function EditorPage() {
           </div>
         </div>
       )}
+      <ToolSeoBlock slug="edit" toolTitle="Edit PDF" />
     </div>
   )
 }

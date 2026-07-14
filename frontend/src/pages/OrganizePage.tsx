@@ -4,6 +4,7 @@ import PdfThumb from '../components/PdfThumb'
 import { api, apiUpload, downloadUrl, formatBytes } from '../lib/api'
 import type { DocumentDto } from '../lib/types'
 import { ToolIcon } from '../tools'
+import ToolSeoBlock from '../components/ToolSeoBlock'
 
 export default function OrganizePage() {
   const [doc, setDoc] = useState<DocumentDto | null>(null)
@@ -106,6 +107,7 @@ export default function OrganizePage() {
           </div>
         </>
       )}
+      <ToolSeoBlock slug="organize" toolTitle="Organize pages" />
     </div>
   )
 }

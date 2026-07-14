@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom'
 import { BRAND } from '../brand'
+import Seo, { SITE_URL } from '../components/Seo'
+import seoContent from '../seo-content.json'
 import { TOOLS, ToolIcon } from '../tools'
 
 const PROMISES = [
@@ -11,6 +13,17 @@ const PROMISES = [
 export default function Home() {
   return (
     <>
+      <Seo title={seoContent.site.title} description={seoContent.site.description} path="/" jsonLd={[{
+        '@context': 'https://schema.org',
+        '@type': 'WebApplication',
+        name: 'PDFHarbor',
+        url: `${SITE_URL}/`,
+        applicationCategory: 'UtilitiesApplication',
+        operatingSystem: 'Web',
+        description: seoContent.site.description,
+        offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+        featureList: TOOLS.map((t) => t.title),
+      }]} />
       <section className="border-b border-slate-200 bg-white">
         <div className="mx-auto max-w-6xl px-4 py-20 text-center">
           <h1 className="mx-auto max-w-3xl text-4xl font-extrabold tracking-tight sm:text-5xl">

@@ -61,6 +61,8 @@ export interface EditElement {
   bold?: boolean
   italic?: boolean
   family?: 'serif' | 'sans' | 'mono'
+  /** replace-text only: original font name (e.g. "Calibri"), so the backend can embed the exact match. */
+  originalFontName?: string
 }
 
 export interface SignerDto {

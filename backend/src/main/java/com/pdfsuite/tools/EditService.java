@@ -23,6 +23,7 @@ import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +38,14 @@ public class EditService {
      *  original word's styling so the replacement can be rendered to look identical. */
     public record Element(int page, String type, float x, float y, float w, float h,
                           String text, Float fontSize, String color, String imageDataUrl,
-                          String originalText, Boolean bold, Boolean italic, String family) {}
+                          String originalText, Boolean bold, Boolean italic, String family,
+                          String originalFontName) {}
+
+    private final FontService fontService;
+
+    public EditService(FontService fontService) {
+        this.fontService = fontService;
+    }
 
     public byte[] applyElements(byte[] input, List<Element> elements) {
         if (elements == null || elements.isEmpty()) throw ApiException.badRequest("Nothing to apply");
@@ -52,6 +60,9 @@ public class EditService {
                 trulyRemoved[i] = TextRegionRemover.removeRegion(
                         doc, doc.getPage(el.page() - 1), el.x(), el.y(), el.w(), el.h());
             }
+
+            // One embedded instance per bundled face is reused across all replacements in this doc.
+            Map<String, PDFont> fontCache = new HashMap<>();
 
             for (int i = 0; i < elements.size(); i++) {
                 Element el = elements.get(i);
@@ -107,9 +118,9 @@ public class EditService {
                             float size = el.fontSize() == null ? 12f : el.fontSize();
                             String rawText = el.text() == null ? "" : el.text();
                             // Match the original word's typeface: reuse the document's own embedded
-                            // font when it can render the new characters (pixel-identical), else fall
-                            // back to the closest Standard-14 face with the same weight and slant.
-                            PDFont font = pickFont(doc, el, rawText);
+                            // font when it can render the new characters (pixel-identical), else embed
+                            // a bundled face that matches the original by name/family/weight/slant.
+                            PDFont font = pickFont(doc, el, rawText, fontCache);
                             String newText = sanitizeFor(font, rawText);
                             // A wider replacement would overlap the next word — shrink to fit the
                             // original word's box (with a little tolerance).
@@ -211,16 +222,53 @@ public class EditService {
      * render the whole new string (identical look), otherwise the closest Standard-14 face
      * matching the original word's family, weight and slant.
      */
-    private PDFont pickFont(PDDocument doc, Element el, String newText) {
+    /**
+     * Chooses the font that makes the replacement look identical to the original, in order:
+     *  1. the document's own embedded font, when it is genuinely embedded and can render the new
+     *     text — pixel-identical (typo fixes, fully-embedded fonts);
+     *  2. a bundled face matching the original typeface by name/family/weight/slant, embedded as a
+     *     subset (Carlito≈Calibri, Caladea≈Cambria, Liberation≈Arial/Times/Courier) — visually
+     *     identical and still searchable;
+     *  3. a Standard-14 face by family/weight/slant — the floor.
+     */
+    private PDFont pickFont(PDDocument doc, Element el, String newText, Map<String, PDFont> cache) {
+        PDFont original = null;
         if (el.originalText() != null && !el.originalText().isBlank()) {
-            PDFont original = FontResolver.resolve(doc, el.page(), el.originalText());
-            if (original != null && canEncode(original, newText)) {
-                return original;
-            }
+            original = FontResolver.resolve(doc, el.page(), el.originalText());
+        }
+        // Tier 1 — reuse only if the original is actually embedded (so the result is self-contained).
+        if (original != null && isEmbedded(original) && canEncode(original, newText)) {
+            return original;
         }
         boolean bold = Boolean.TRUE.equals(el.bold());
         boolean italic = Boolean.TRUE.equals(el.italic());
+        // Tier 2 — embed the bundled face that matches the original typeface. Prefer the font name
+        // the extractor read from the page (accurate even for non-embedded fonts like "Calibri"),
+        // falling back to the resolved font's name.
+        String originalName = el.originalFontName() != null ? el.originalFontName()
+                : (original != null ? safeName(original) : null);
+        PDFont matched = fontService.resolveEmbedded(doc, originalName, el.family(), bold, italic, cache);
+        if (matched != null && canEncode(matched, newText)) {
+            return matched;
+        }
+        // Tier 3 — Standard-14 fallback.
         return standard14(el.family(), bold, italic);
+    }
+
+    private static boolean isEmbedded(PDFont font) {
+        try {
+            return font.isEmbedded();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private static String safeName(PDFont font) {
+        try {
+            return font.getName();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private static PDFont standard14(String family, boolean bold, boolean italic) {

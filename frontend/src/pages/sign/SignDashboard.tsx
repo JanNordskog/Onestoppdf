@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { api } from '../../lib/api'
 import type { SignSummary } from '../../lib/types'
 import { ToolIcon } from '../../tools'
+import ToolSeoBlock from '../../components/ToolSeoBlock'
 
 const STATUS_STYLE: Record<string, string> = {
   SENT: 'bg-amber-100 text-amber-700',
@@ -55,6 +56,7 @@ export default function SignDashboard() {
           ))}
         </ul>
       )}
+      <ToolSeoBlock slug="sign" toolTitle="eSign" />
     </div>
   )
 }

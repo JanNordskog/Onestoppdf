@@ -1,0 +1,252 @@
+{
+  "site": {
+    "name": "PDFHarbor",
+    "tagline": "Every PDF tool. One harbor. Your files never leave.",
+    "description": "Free online PDF tools with no task limits, no watermarks and no sign-up: merge, split, compress, convert, edit and e-sign PDFs. Files auto-delete after 2 hours.",
+    "title": "PDFHarbor — free PDF tools without limits: merge, edit, convert & e-sign"
+  },
+  "tools": {
+    "merge": {
+      "title": "Merge PDF files online free — arrange every page | PDFHarbor",
+      "description": "Combine PDF files free, with page-level control: drag pages into any order across files, drop the ones you don't need, even interleave scans. No limits.",
+      "intro": "PDFHarbor merges PDF files with page-level control: every page appears as a thumbnail, and you drag them into exactly the order you want — across files, not just between them. Unlike most online mergers, there are no file-size caps, no daily limits and no watermarks.",
+      "steps": [
+        "Upload two or more PDF files (drag and drop works).",
+        "Drag page thumbnails into the order you want — pages from different files can be mixed freely.",
+        "Remove pages you don't need, or click Interleave to alternate pages between files.",
+        "Click Merge and download the combined PDF."
+      ],
+      "faqs": [
+        { "q": "Can I change the page order before merging?", "a": "Yes. Every page appears as a draggable thumbnail, so you control the exact page sequence of the merged PDF — including mixing pages from different source files." },
+        { "q": "What does Interleave do?", "a": "Interleave alternates pages across your files (A1, B1, A2, B2…). It is made for double-sided documents scanned as two piles: fronts in one file, backs in another." },
+        { "q": "Is there a file size or page limit?", "a": "No. PDFHarbor has no task limits, no page caps and no premium tier — merge as many files as you need, up to 100 MB per file." }
+      ]
+    },
+    "split": {
+      "title": "Split PDF online free — pick pages visually | PDFHarbor",
+      "description": "Split a PDF free by clicking the pages you want to keep. Extract them as one PDF or download every page as a separate file. No limits, no watermarks.",
+      "intro": "PDFHarbor splits PDFs visually: every page shows as a thumbnail and you simply click the ones you want to keep. Extract the selection as a single PDF, or burst the whole document into one PDF per page, delivered as a ZIP.",
+      "steps": [
+        "Upload a PDF file.",
+        "Click page thumbnails to select or deselect them — use All, None or Invert for speed.",
+        "Click Extract to download the selected pages as one PDF, or Split all to ZIP for one file per page."
+      ],
+      "faqs": [
+        { "q": "Can I select the pages visually instead of typing ranges?", "a": "Yes. Every page renders as a thumbnail; selected pages show a check mark and deselected pages are dimmed, so you always see exactly what you'll get." },
+        { "q": "How do I remove just a few pages from a PDF?", "a": "Select only the pages you want to delete, click Invert to flip the selection, then Extract — the result is your document without those pages." },
+        { "q": "Can I get each page as its own PDF?", "a": "Yes. Split all to ZIP produces a ZIP archive containing every page of your document as a separate single-page PDF." }
+      ]
+    },
+    "organize": {
+      "title": "Reorder & delete PDF pages online free | PDFHarbor",
+      "description": "Reorder or delete PDF pages visually with thumbnails, then save a new PDF. Free, no limits, no watermarks, files auto-delete after 2 hours.",
+      "intro": "PDFHarbor's page organizer shows your whole document as thumbnails so you can reorder pages with arrows and delete the ones you don't need, then save a fresh PDF. It runs without accounts, task limits or watermarks.",
+      "steps": [
+        "Upload a PDF file.",
+        "Move pages left or right into their new order, and remove unwanted pages.",
+        "Click Save new PDF and download the reorganized document."
+      ],
+      "faqs": [
+        { "q": "Can I undo a page deletion?", "a": "Click Reset to restore the original page order and bring every removed page back at any point before saving." },
+        { "q": "Does reordering reduce quality?", "a": "No. Pages are moved losslessly — the content of each page is byte-identical to the original; only the order changes." }
+      ]
+    },
+    "rotate": {
+      "title": "Rotate PDF pages online free | PDFHarbor",
+      "description": "Rotate PDF pages 90°, 180° or 270° — all pages or just the ones you pick. Free, lossless, no watermarks and no task limits.",
+      "intro": "Rotate every page of a PDF, or only specific pages, by 90°, 180° or 270°. Rotation is lossless — it updates the page's display orientation without re-rendering content, so quality is untouched.",
+      "steps": [
+        "Upload a PDF file.",
+        "Choose the rotation angle and, optionally, which pages it applies to.",
+        "Click Rotate and download the corrected PDF."
+      ],
+      "faqs": [
+        { "q": "Will rotating reduce image quality?", "a": "No. Rotation only changes the page's orientation flag in the PDF, so text and images stay pixel-identical." },
+        { "q": "Can I rotate only some pages?", "a": "Yes. List the page numbers to rotate (for example 1,3) and every other page keeps its current orientation." }
+      ]
+    },
+    "compress": {
+      "title": "Compress PDF online free — you pick the trade-off | PDFHarbor",
+      "description": "Shrink PDF file size free with three quality levels. Smart compression never inflates your file and tells you exactly how much smaller it got.",
+      "intro": "PDFHarbor compresses PDFs by re-encoding oversized images at your chosen quality level while protecting things compression would hurt: transparent images, black-and-white scans and small graphics are left intact. If your PDF can't shrink without visible damage, you get the original back and an honest message — never a bigger file.",
+      "steps": [
+        "Upload a PDF file.",
+        "Pick a compression level: Light for best quality, Balanced, or Strong for the smallest file.",
+        "Click Compress — the result screen shows exactly how much smaller the file became."
+      ],
+      "faqs": [
+        { "q": "Why didn't my PDF get smaller?", "a": "Text-only PDFs and already-optimized files have little to compress. PDFHarbor tells you when that happens and returns your original file instead of silently re-saving it — your file will never come back larger." },
+        { "q": "How much smaller will my PDF get?", "a": "Image-heavy documents typically shrink to 20–40% of their original size at the Balanced level. The result screen reports the exact saving." },
+        { "q": "Does compression affect text sharpness?", "a": "No. Text and vector graphics are never touched — only photographic images are re-encoded, at the quality level you choose." }
+      ]
+    },
+    "watermark": {
+      "title": "Add a watermark to PDF online free | PDFHarbor",
+      "description": "Stamp a diagonal text watermark like CONFIDENTIAL across every PDF page. Custom text, size and opacity — free, no limits.",
+      "intro": "Stamp a diagonal text watermark — CONFIDENTIAL, DRAFT, your company name — across every page of a PDF. You control the text, font size and opacity, and the watermark becomes a permanent part of each page.",
+      "steps": [
+        "Upload a PDF file.",
+        "Type the watermark text and adjust size and opacity.",
+        "Click Add watermark and download the stamped PDF."
+      ],
+      "faqs": [
+        { "q": "Can the watermark be removed later?", "a": "The watermark is drawn into each page's content, so it prints and displays everywhere. Like any visible watermark, a determined editor could cover it, so treat it as labeling rather than security." },
+        { "q": "Can I control how strong the watermark looks?", "a": "Yes. Opacity runs from 0 to 1 — 0.25 gives a subtle stamp that keeps the underlying text readable, while 1.0 is fully solid." }
+      ]
+    },
+    "page-numbers": {
+      "title": "Add page numbers to PDF online free | PDFHarbor",
+      "description": "Number PDF pages free with clean n / total footers. Choose the starting number. No watermarks, no limits, no sign-up.",
+      "intro": "Add clean page-number footers in the style 3 / 12 to every page of a PDF. You choose the number the count starts at, which is handy when the document is part of a larger set.",
+      "steps": [
+        "Upload a PDF file.",
+        "Choose the starting number (1 by default).",
+        "Click Number pages and download the result."
+      ],
+      "faqs": [
+        { "q": "What do the page numbers look like?", "a": "A centered footer in the form 3 / 12 — the page's position and the total count — set in a small, unobtrusive typeface." },
+        { "q": "Can numbering start at something other than 1?", "a": "Yes. Set the starting number to continue a sequence from an earlier volume or chapter." }
+      ]
+    },
+    "edit": {
+      "title": "Edit PDF text online free — like a Word document | PDFHarbor",
+      "description": "Click any line of PDF text and retype it — the original letters are removed and your text is redrawn in a matching font. Plus highlights, boxes, images and signatures.",
+      "intro": "PDFHarbor edits PDF text in place, like a word processor: click a line, retype it, and the original characters are removed from the file while your replacement is drawn in a matching font, size and position. You can also add text boxes, highlights, rectangles, images and hand-drawn signatures anywhere on the page.",
+      "steps": [
+        "Upload a PDF file.",
+        "Click any line of text, retype it and press Enter — only the words you changed are touched.",
+        "Add highlights, boxes, images or a signature from the toolbar if you need them.",
+        "Click Apply and download the edited PDF."
+      ],
+      "faqs": [
+        { "q": "Do edits look like the original text?", "a": "Yes. PDFHarbor reuses the document's own embedded font whenever it can render your new text, and otherwise falls back to the closest matching standard font at the same size, color and baseline." },
+        { "q": "Is the old text really gone, or just covered up?", "a": "Really gone. The original characters are removed from the PDF's content stream, so they no longer appear in search, selection or copy-paste." },
+        { "q": "Can I edit scanned PDFs?", "a": "In-place text editing needs a text layer, so pure image scans can't be retyped yet — but you can still add text boxes, highlights and signatures on top." }
+      ]
+    },
+    "pdf-to-word": {
+      "title": "Convert PDF to Word online free | PDFHarbor",
+      "description": "Turn a PDF into an editable Word (.docx) file free. Honest extraction-grade conversion that runs on the server you control — no cloud upload.",
+      "intro": "Convert a PDF into an editable Word document (.docx). PDFHarbor extracts the text with its paragraph structure page by page — an honest, extraction-grade conversion that is ideal for getting clean, editable text out of a PDF.",
+      "steps": [
+        "Upload a PDF file.",
+        "Click Convert to Word.",
+        "Download the .docx and open it in Word, LibreOffice or Google Docs."
+      ],
+      "faqs": [
+        { "q": "Does the Word file keep my exact layout?", "a": "The conversion prioritizes clean, editable text over pixel-perfect layout: paragraphs and page breaks are preserved, while complex multi-column designs are simplified." },
+        { "q": "Are my files sent to a third-party cloud?", "a": "No. Conversion runs entirely on the PDFHarbor server, and anonymous uploads self-destruct after 2 hours." }
+      ]
+    },
+    "pdf-to-text": {
+      "title": "Extract text from PDF online free | PDFHarbor",
+      "description": "Pull all plain text out of any PDF free — clean UTF-8 text file, no formatting noise, no limits, no sign-up.",
+      "intro": "Extract every line of text from a PDF into a clean plain-text file. Useful for feeding documents into scripts, search indexes or AI tools that want raw text without formatting noise.",
+      "steps": [
+        "Upload a PDF file.",
+        "Click Extract text.",
+        "Download the .txt file."
+      ],
+      "faqs": [
+        { "q": "Does this work on scanned PDFs?", "a": "Text extraction reads the PDF's text layer. Scans without OCR contain no text layer, so they produce little or no output." }
+      ]
+    },
+    "pdf-to-images": {
+      "title": "Convert PDF to images (PNG) online free | PDFHarbor",
+      "description": "Render every PDF page as a crisp PNG at the DPI you choose, delivered as a ZIP. Free, no watermarks, no page limits.",
+      "intro": "Render each page of a PDF as a high-quality PNG image at the resolution you choose, packaged as a ZIP. Great for slides, previews, thumbnails or embedding pages where a PDF won't do.",
+      "steps": [
+        "Upload a PDF file.",
+        "Pick the resolution in DPI — 150 is crisp for screens, 300 for print.",
+        "Click Convert and download the ZIP of PNG images."
+      ],
+      "faqs": [
+        { "q": "What resolution should I choose?", "a": "150 DPI is sharp on screens and keeps files small; 300 DPI matches print quality; 72 DPI is fine for small thumbnails." }
+      ]
+    },
+    "images-to-pdf": {
+      "title": "Convert JPG & PNG images to PDF online free | PDFHarbor",
+      "description": "Combine JPG and PNG photos into a single PDF free, in the order you choose. No watermarks, no limits, no sign-up.",
+      "intro": "Turn JPG and PNG images into a single PDF — each image becomes one page, in the order you arrange. Perfect for phone-photographed receipts, whiteboards and paper documents.",
+      "steps": [
+        "Upload one or more JPG or PNG images.",
+        "Arrange them in the order you want.",
+        "Click Create PDF and download the result."
+      ],
+      "faqs": [
+        { "q": "Are my photos resized or recompressed?", "a": "Images are placed onto PDF pages at their native resolution — nothing is scaled down or recompressed." }
+      ]
+    },
+    "extract-form-data": {
+      "title": "Extract PDF form data to CSV or JSON free | PDFHarbor",
+      "description": "Pull filled form fields out of a PDF into CSV or JSON in one click. A power tool most PDF sites don't have — free and unlimited.",
+      "intro": "Extract every filled form field from a PDF — names, values, checkboxes — into structured JSON or CSV. It turns stacks of filled-in forms into spreadsheet rows in seconds, a power feature most online PDF tools simply don't offer.",
+      "steps": [
+        "Upload a PDF that contains filled form fields.",
+        "Choose JSON or CSV output.",
+        "Click Extract data and download the file."
+      ],
+      "faqs": [
+        { "q": "What kinds of forms does this read?", "a": "PDFs with real (AcroForm) form fields — the kind you can click and type into. Flattened or scanned forms have no field data left to extract." },
+        { "q": "What does the output look like?", "a": "JSON gives you a field-name to value map; CSV gives a two-column table of field and value — ready for Excel or a script." }
+      ]
+    },
+    "protect": {
+      "title": "Password-protect a PDF online free (AES-256) | PDFHarbor",
+      "description": "Encrypt a PDF with a password free using AES-256. The file becomes unreadable without the password. No limits, no sign-up.",
+      "intro": "Protect a PDF with a password using AES-256 encryption — the same grade used for sensitive records. Without the password the file cannot be opened, and PDFHarbor never stores your password.",
+      "steps": [
+        "Upload a PDF file.",
+        "Choose a password (at least 4 characters; longer is stronger).",
+        "Click Protect and download the encrypted PDF."
+      ],
+      "faqs": [
+        { "q": "How strong is the encryption?", "a": "AES-256, the current industry standard for PDF encryption. A strong, unique password is what makes it effective." },
+        { "q": "What happens if I forget the password?", "a": "There is no backdoor — an AES-256-encrypted PDF without its password is effectively unrecoverable, so store the password somewhere safe." }
+      ]
+    },
+    "unlock": {
+      "title": "Remove a PDF password online free | PDFHarbor",
+      "description": "Unlock a password-protected PDF you own — enter the current password once and download a copy that opens freely. Free and unlimited.",
+      "intro": "Remove the password from a PDF you have the right to open: enter the current password once, and PDFHarbor saves an identical copy with the encryption removed, so it opens freely everywhere.",
+      "steps": [
+        "Upload the password-protected PDF.",
+        "Enter its current password.",
+        "Click Unlock and download the unprotected copy."
+      ],
+      "faqs": [
+        { "q": "Can this crack a PDF whose password I don't know?", "a": "No. Unlocking requires the correct current password — PDFHarbor removes protection, it doesn't break it." }
+      ]
+    },
+    "strip-metadata": {
+      "title": "Remove metadata from PDF online free | PDFHarbor",
+      "description": "Strip author, title, creation dates and hidden XMP data from a PDF before sharing it. Free privacy cleanup with no limits.",
+      "intro": "PDFs quietly carry metadata — author names, software versions, creation dates, hidden XMP blocks. This tool strips all of it, so the file you share contains the pages and nothing else about you.",
+      "steps": [
+        "Upload a PDF file.",
+        "Click Strip metadata.",
+        "Download the cleaned PDF."
+      ],
+      "faqs": [
+        { "q": "What metadata gets removed?", "a": "The document information dictionary (author, title, subject, keywords, creator, producer, dates) and the embedded XMP metadata stream." },
+        { "q": "Why does metadata matter?", "a": "Metadata can reveal who wrote a document, when, and with what software — details you may not want attached to a file you publish or share." }
+      ]
+    },
+    "sign": {
+      "title": "Send a PDF for e-signature free — unlimited | PDFHarbor",
+      "description": "Send PDFs for electronic signature with multiple signers, drawn signatures and a tamper-evident audit trail. Unlimited requests, no per-envelope fees.",
+      "intro": "Send any PDF for electronic signature: add signers, place signature, name, date and text fields on the pages, and each signer gets a private link to draw their signature. When everyone has signed, the finished PDF includes every signature plus an appended audit certificate — with no envelope limits or per-send fees, ever.",
+      "steps": [
+        "Upload the PDF and add your signers' names and email addresses.",
+        "Place signature, name, date or text fields on the pages for each signer.",
+        "Send the request — every signer receives a private signing link.",
+        "Download the completed PDF with all signatures and its audit certificate page."
+      ],
+      "faqs": [
+        { "q": "How many signature requests can I send?", "a": "Unlimited. PDFHarbor has no envelope quotas or per-send pricing — send one request or a thousand." },
+        { "q": "What's in the audit trail?", "a": "Every event — request created, viewed, signed, completed — with timestamps, signer identity and IP address, plus a human-readable certificate page appended to the final PDF." },
+        { "q": "Are the signatures legally valid?", "a": "PDFHarbor records signer intent, identity markers and a tamper-evident audit log, which fits the common requirements for electronic signatures (e.g. ESIGN/eIDAS simple e-signatures). For notarized or qualified-signature use cases, check your local requirements." }
+      ]
+    }
+  }
+}
