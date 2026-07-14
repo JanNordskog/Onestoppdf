@@ -133,7 +133,7 @@ export function ToolIcon({ family, slug, className = '' }: { family: ToolConfig[
   const s = FAMILY_STYLES[family]
   if (slug) {
     return (
-      <img src={`/icons/${slug}.png`} alt=""
+      <img src={`/icons/${slug}.png`} alt="" width={44} height={44}
            className={`h-11 w-11 shrink-0 rounded-xl object-cover ${className}`} />
     )
   }

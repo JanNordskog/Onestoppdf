@@ -4,6 +4,7 @@ import ToolPage from './components/ToolPage'
 import { AuthProvider, RequireAuth } from './lib/auth'
 import Home from './pages/Home'
 import { LoginPage, RegisterPage } from './pages/AuthPages'
+import { AboutPage, ContactPage, PrivacyPage } from './pages/TrustPages'
 import MyFiles from './pages/MyFiles'
 import MergePage from './pages/MergePage'
 import OrganizePage from './pages/OrganizePage'
@@ -24,6 +25,9 @@ export default function App() {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/contact" element={<ContactPage />} />
             <Route path="/files" element={<RequireAuth><MyFiles /></RequireAuth>} />
             <Route path="/merge" element={<MergePage />} />
             <Route path="/split" element={<SplitPage />} />

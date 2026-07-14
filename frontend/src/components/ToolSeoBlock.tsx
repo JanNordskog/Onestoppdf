@@ -1,4 +1,6 @@
+import { Link } from 'react-router-dom'
 import seoContent from '../seo-content.json'
+import { TOOLS } from '../tools'
 import Seo, { SITE_URL } from './Seo'
 
 type ToolSeo = {
@@ -17,6 +19,9 @@ type ToolSeo = {
 export default function ToolSeoBlock({ slug, toolTitle }: { slug: string; toolTitle: string }) {
   const seo = (seoContent.tools as Record<string, ToolSeo>)[slug]
   if (!seo) return null
+
+  const family = TOOLS.find((t) => t.slug === slug)?.family
+  const related = TOOLS.filter((t) => t.family === family && t.slug !== slug).slice(0, 4)
 
   const jsonLd: object[] = [
     {
@@ -64,6 +69,22 @@ export default function ToolSeoBlock({ slug, toolTitle }: { slug: string; toolTi
             </div>
           ))}
         </dl>
+
+        {related.length > 0 && (
+          <>
+            <h2 className="mt-8 text-lg font-semibold text-slate-900">Related tools</h2>
+            <ul className="mt-3 flex flex-wrap gap-2">
+              {related.map((t) => (
+                <li key={t.slug}>
+                  <Link to={`/${t.slug}`}
+                        className="inline-block rounded-full border border-slate-200 bg-white px-4 py-1.5 text-sm text-slate-700 transition hover:border-indigo-300 hover:text-indigo-700">
+                    {t.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
       </section>
     </>
   )

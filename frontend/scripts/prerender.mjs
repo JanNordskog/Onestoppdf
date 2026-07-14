@@ -54,6 +54,11 @@ routes.push({ path: '/', title: seo.site.title, description: seo.site.descriptio
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
 }] })
 
+// Trust pages
+for (const [slug, p] of Object.entries(seo.pages ?? {})) {
+  routes.push({ path: `/${slug}`, title: p.title, description: p.description, jsonLd: [] })
+}
+
 // Tool pages
 for (const [slug, t] of Object.entries(seo.tools)) {
   routes.push({ path: `/${slug}`, title: t.title, description: t.description, jsonLd: [

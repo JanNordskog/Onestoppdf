@@ -5,6 +5,20 @@
     "description": "Free online PDF tools with no task limits, no watermarks and no sign-up: merge, split, compress, convert, edit and e-sign PDFs. Files auto-delete after 2 hours.",
     "title": "PDFHarbor — free PDF tools without limits: merge, edit, convert & e-sign"
   },
+  "pages": {
+    "about": {
+      "title": "About PDFHarbor — the PDF toolkit without meters",
+      "description": "Why PDFHarbor exists: every PDF tool in one place, self-hosted, with no task limits, no watermarks and no upload-and-pray privacy policies."
+    },
+    "privacy": {
+      "title": "Privacy at PDFHarbor — your files never leave",
+      "description": "How PDFHarbor handles your data: files processed on one server you control, anonymous uploads auto-delete after 2 hours, no third parties, no trackers."
+    },
+    "contact": {
+      "title": "Contact PDFHarbor",
+      "description": "Questions, bug reports or feature requests for PDFHarbor — reach the project on GitHub."
+    }
+  },
   "tools": {
     "merge": {
       "title": "Merge PDF files online free — arrange every page | PDFHarbor",

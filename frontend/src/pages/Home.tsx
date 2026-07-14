@@ -23,6 +23,13 @@ export default function Home() {
         description: seoContent.site.description,
         offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
         featureList: TOOLS.map((t) => t.title),
+      }, {
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        name: 'PDFHarbor',
+        url: `${SITE_URL}/`,
+        logo: `${SITE_URL}/logo.png`,
+        sameAs: ['https://github.com/JanNordskog/Onestoppdf'],
       }]} />
       <section className="border-b border-slate-200 bg-white">
         <div className="mx-auto max-w-6xl px-4 py-20 text-center">
