@@ -41,10 +41,8 @@ export const TOOLS: ToolConfig[] = [
     custom: true,
   },
   {
-    slug: 'split', title: 'Split PDF', subtitle: 'Extract pages or burst into single pages', family: 'pages',
-    endpoint: '/api/tools/split', cta: 'Split PDF',
-    fields: [{ name: 'ranges', label: 'Pages to extract', type: 'text', placeholder: 'e.g. 1-3,5', help: 'Leave empty to get a ZIP with every page as its own PDF' }],
-    buildBody: (ids, v) => ({ documentId: ids[0], ranges: v.ranges || null }),
+    slug: 'split', title: 'Split PDF', subtitle: 'Pick the pages to keep, visually', family: 'pages',
+    custom: true,
   },
   { slug: 'organize', title: 'Organize pages', subtitle: 'Reorder or delete pages visually', family: 'pages', custom: true },
   {
