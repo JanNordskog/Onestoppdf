@@ -41,6 +41,10 @@ public class DocumentService {
         if (PDF.equals(doc.getContentType())) {
             try (PDDocument pdf = Loader.loadPDF(bytes)) {
                 doc.setPageCount(pdf.getNumberOfPages());
+            } catch (org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException e) {
+                // Password-protected output (e.g. the Protect tool) is a valid PDF whose
+                // page count simply can't be read without the password.
+                doc.setPageCount(null);
             } catch (IOException e) {
                 throw ApiException.badRequest("\"" + doc.getOriginalName() + "\" is not a valid PDF");
             }
