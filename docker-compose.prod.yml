@@ -1,0 +1,47 @@
+# Production deployment: postgres + backend + nginx-served frontend.
+#   PUBLIC_URL=http://your-host docker compose -f docker-compose.prod.yml up -d --build
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: pdfsuite
+      POSTGRES_USER: pdfsuite
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-pdfsuite}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pdfsuite"]
+      interval: 5s
+      retries: 24
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/pdfsuite
+      DB_USER: pdfsuite
+      DB_PASSWORD: ${DB_PASSWORD:-pdfsuite}
+      CORS_ALLOWED_ORIGINS: ${PUBLIC_URL:-http://localhost}
+      APP_FRONTEND_URL: ${PUBLIC_URL:-http://localhost}
+      APP_STORAGE_DIR: /app/storage
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production-0123456789abcdef}
+    volumes:
+      - storage:/app/storage
+    depends_on:
+      db:
+        condition: service_healthy
+
+  web:
+    build:
+      context: ./frontend
+      args:
+        SITE_URL: ${PUBLIC_URL:-http://localhost}
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
+  storage:
